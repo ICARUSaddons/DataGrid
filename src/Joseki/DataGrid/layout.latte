@@ -1,0 +1,60 @@
+{block all}
+    {snippet rows}
+    {block content}
+        {form form}
+            <table class="table table-striped table-condensed table-hover">
+                <thead>
+                {block header}
+                    <tr>
+                        {foreach $columns as $column}
+                            <th {if $column->getSize()}style="width: {$column->getSize()}%" {/if}>{$column->getLabel()}</th>
+                        {/foreach}
+                        {if count($links)}
+                            <th></th>
+                        {/if}
+                    </tr>
+                {/block}
+                {ifset $_form['filter']}
+                {block filter}
+                    <tr>
+                        {formContainer filter}
+                        {foreach $columns as $column}
+                            <th>
+                                {if isset($_form[$column->getName()])}
+                                    {input $column->getName()}
+                                {/if}
+                            </th>
+                        {/foreach}
+                            <th class="text-right">{input filter, class => 'btn btn-sm btn-primary ajax'}</th>
+                        {/formContainer}
+                    </tr>
+                {/block}
+                {/ifset}
+                </thead>
+                <tbody n:inner-foreach="$data as $row">
+                {block row}
+                    {block row-opening-tag}<tr>{/block}
+                    {block row-columns}
+                        {foreach $columns as $column}
+                            <td>{$column->formatValue($row)}</td>
+                        {/foreach}
+                    {/block}
+                    {block row-links}
+                        {if count($links)}
+                            <td class="text-right">
+                                {foreach $links as $link}
+                                    {if $link->isValid($row)}
+                                        <a href="{plink $link->getLink() (expand) $link->getArgs($row)}" class="btn btn-default btn-xs">{$link->getLabel()}</a>
+                                    {/if}
+                                {/foreach}
+                            </td>
+                        {/if}
+                    {/block}
+                    {block row-closing-tag}</tr>{/block}
+                {/block}
+                </tbody>
+            </table>
+        {/form}
+    {/block}
+    {/snippet}
+{/block}
