@@ -1,6 +1,6 @@
 <?php
 
-namespace Netiso\Joseki\DataGrid;
+namespace Joseki\DataGrid;
 
 use Nette\Utils\Callback;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Netiso\Joseki\DataGrid\Columns;
+namespace Joseki\DataGrid\Columns;
 
 class NumericColumn extends Column
 {
