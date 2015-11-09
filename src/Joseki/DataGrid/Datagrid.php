@@ -188,7 +188,6 @@ class DataGrid extends Control
     public function render()
     {
         $template = $this->createTemplate();
-        $template->setFile($template->layout);
         $template->render();
     }
 
@@ -204,6 +203,7 @@ class DataGrid extends Control
         $print = (string)$this['form'];
 
         $template->layout = __DIR__ . "/layout.latte";
+        $template->setFile($template->layout);
 
         $template->columns = $this->columns;
         $template->links = $this->links;
