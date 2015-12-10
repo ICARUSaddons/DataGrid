@@ -90,7 +90,7 @@ class NumericColumn extends Column
             $value = $row = $row->$name;
         } while (count($parts));
 
-        if ($value) {
+        if (is_numeric($value)) {
             return number_format($value, $this->precision, $this->decimalSeparator, $this->thousandSeparator);
         }
         return null;
