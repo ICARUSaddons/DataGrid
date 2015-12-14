@@ -25,7 +25,7 @@ class LinkTest extends \Tester\TestCase
         $link = $datagrid->addLink(':Article:edit', 'Edit');
 
         Assert::equal([], $link->getArgs());
-        Assert::equal([], $link->getArgs($row));
+        Assert::equal(['id' => 5], $link->getArgs($row));
 
         $link->setPrimaryName();
         Assert::equal('id', $link->getPrimaryArg());
@@ -38,6 +38,9 @@ class LinkTest extends \Tester\TestCase
         $datagrid->setPrimaryKey('foo');
         Assert::equal(['foo' => 'aaa'], $link->getArgs($row));
 
+        $args = ['foo'=>'hello'];
+        $link->setArgs($args); // should remove default id value
+        Assert::equal($args, $link->getArgs($row));
     }
 
 }
