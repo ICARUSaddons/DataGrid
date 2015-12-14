@@ -43,6 +43,8 @@ class DataGrid extends Control
     /** @var callback */
     private $filterFormFactory;
 
+    private $primaryKey = 'id';
+
 
 
     /**
@@ -134,6 +136,29 @@ class DataGrid extends Control
     }
 
 
+
+    /**
+     * @return string
+     */
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
+    }
+
+
+
+    /**
+     * @param string $primaryKey
+     */
+    public function setPrimaryKey($primaryKey)
+    {
+        $this->primaryKey = $primaryKey;
+    }
+
+
+
+
+
     /************************* CONTROLS **************************/
 
     /**
@@ -177,7 +202,7 @@ class DataGrid extends Control
 
     public function addLink($link, $label)
     {
-        $this->links[] = $link = new Link($link, $label);
+        $this->links[] = $link = new Link($link, $label, $this);
         return $link;
     }
 

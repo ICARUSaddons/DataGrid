@@ -10,9 +10,6 @@ class Link
     protected $condition;
 
     /** @var string */
-    private $primaryArgName = 'id';
-
-    /** @var string */
     private $link;
 
     /** @var string */
@@ -24,16 +21,25 @@ class Link
     /** @var bool */
     private $usePrimary = false;
 
+    /** @var DataGrid */
+    private $grid;
+
+    private $customArgs = [];
+
+    private $primaryArg;
+
 
 
     /**
      * @param string $link
      * @param string $label
+     * @param DataGrid $grid
      */
-    function __construct($link, $label)
+    function __construct($link, $label, DataGrid $grid)
     {
         $this->link = $link;
         $this->label = $label;
+        $this->grid = $grid;
     }
 
 
@@ -58,6 +64,31 @@ class Link
 
 
 
+    public function addArg($value, $key = null)
+    {
+        if (!$key) {
+            $key = $this->grid->getPrimaryKey();
+        }
+        $this->customArgs[$key] = ['normal', $value];
+    }
+
+
+
+    public function setPrimaryName($key = null)
+    {
+        $this->usePrimary = true;
+        $this->primaryArg = $key ?: $this->grid->getPrimaryKey();
+    }
+
+
+
+    public function getPrimaryArg()
+    {
+        return isset($this->primaryArg) ? $this->primaryArg : $this->grid->getPrimaryKey();
+    }
+
+
+
     /**
      * @param null $row
      * @return array
@@ -65,7 +96,9 @@ class Link
     public function getArgs($row = null)
     {
         if ($row && $this->isUsePrimary()) {
-            return array_merge([$this->getPrimaryArgName() => $row->id], $this->args);
+            $property = $this->grid->getPrimaryKey();
+            $key = $this->getPrimaryArg();
+            return array_merge([$key => $row->$property], $this->args);
         }
         return $this->args;
     }
@@ -74,15 +107,19 @@ class Link
 
     /**
      * @param array $args
-     * @param bool $usePrimary
-     * @param string $primaryArgName
+     * @param bool $usePrimary @deprecated
      * @return $this
      */
-    public function setArgs($args, $usePrimary = false, $primaryArgName = 'id')
+    public function setArgs($args, $usePrimary = false)
     {
-        $this->args = $args;
-        $this->usePrimary = $usePrimary;
-        $this->primaryArgName = $primaryArgName;
+        $this->customArgs = [];
+        $this->usePrimary = false;
+        foreach ($args as $key => $value) {
+            $this->addArg($value, $key);
+        }
+        if ($usePrimary) {
+            $this->setPrimaryName();
+        }
         return $this;
     }
 
@@ -112,16 +149,6 @@ class Link
             return Callback::invokeArgs($this->condition, [$row]);
         }
         return true;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    public function getPrimaryArgName()
-    {
-        return $this->primaryArgName;
     }
 
 }
