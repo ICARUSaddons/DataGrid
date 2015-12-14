@@ -7,7 +7,14 @@
                 {block header}
                     <tr>
                         {foreach $columns as $column}
-                            <th {if $column->getSize()}style="width: {$column->getSize()}%" {/if}>{$column->getLabel()}</th>
+                            <th {if $column->getSize()}style="width: {$column->getSize()}%" {/if}>
+                                {$column->getLabel()}
+                                {if $column->isSortable()}
+                                    {$orderBy = isset($_orderBy[$column->getName()]) ? !$_orderBy[$column->getName()] : true}
+                                    <a href="{link orderBy!, $column->getName(), $orderBy}">{if $orderBy}▲{else}▼{/if}</a>
+                                    <a href="{link removeOrderBy!, $column->getName()}">X</a>
+                                {/if}
+                            </th>
                         {/foreach}
                         {if count($links)}
                             <th></th>
@@ -44,7 +51,11 @@
                             <td class="text-right">
                                 {foreach $links as $link}
                                     {if $link->isValid($row)}
-                                        <a href="{plink $link->getLink() (expand) $link->getArgs($row)}" class="btn btn-default btn-xs">{$link->getLabel()}</a>
+                                        {if $link->isSignal()}
+                                            <a href="{link $link->getLink() (expand) $link->getArgs($row)}" class="btn btn-default btn-xs">{$link->getLabel()}</a>
+                                        {else}
+                                            <a href="{plink $link->getLink() (expand) $link->getArgs($row)}" class="btn btn-default btn-xs">{$link->getLabel()}</a>
+                                        {/if}
                                     {/if}
                                 {/foreach}
                             </td>

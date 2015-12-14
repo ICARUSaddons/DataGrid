@@ -3,6 +3,7 @@
 namespace Joseki\DataGrid;
 
 use Nette\Utils\Callback;
+use Nette\Utils\Strings;
 
 class Link
 {
@@ -149,6 +150,13 @@ class Link
             return Callback::invokeArgs($this->condition, [$row]);
         }
         return true;
+    }
+
+
+
+    public function isSignal()
+    {
+        return Strings::endsWith($this->getLink(), '!');
     }
 
 }

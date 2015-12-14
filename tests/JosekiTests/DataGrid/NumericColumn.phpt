@@ -3,6 +3,7 @@
 namespace JosekiTests\DataGrid;
 
 use Joseki\DataGrid\Columns\NumericColumn;
+use Joseki\DataGrid\DataGrid;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
 
@@ -27,19 +28,21 @@ class NumericColumnTest extends \Tester\TestCase
             ]
         );
 
-        $column = new NumericColumn('foo', 'FOO');
+        $datagrid = new DataGrid();
+
+        $column = new NumericColumn('foo', 'FOO', $datagrid);
         Assert::equal('500.36', $column->formatValue($data));
-        $column = new NumericColumn('zero', 'ZERO');
+        $column = new NumericColumn('zero', 'ZERO', $datagrid);
         Assert::equal('0.00', $column->formatValue($data));
 
-        $column = new NumericColumn('bar.hello', 'HELLO');
+        $column = new NumericColumn('bar.hello', 'HELLO', $datagrid);
         Assert::equal('100.10', $column->formatValue($data));
-        $column = new NumericColumn('bar.world', 'WORLD');
+        $column = new NumericColumn('bar.world', 'WORLD', $datagrid);
         Assert::equal('121.21', $column->formatValue($data));
 
         Assert::exception(
-            function () use ($data) {
-                $column = new NumericColumn('bar.text', 'Text');
+            function () use ($data, $datagrid) {
+                $column = new NumericColumn('bar.text', 'Text', $datagrid);
                 $column->formatValue($data);
             },
             'Joseki\DataGrid\InvalidTypeException'

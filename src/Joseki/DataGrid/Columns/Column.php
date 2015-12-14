@@ -2,6 +2,7 @@
 
 namespace Joseki\DataGrid\Columns;
 
+use Joseki\DataGrid\DataGrid;
 use Joseki\DataGrid\InvalidPropertyException;
 use Nette\Utils\Callback;
 
@@ -16,12 +17,24 @@ abstract class Column
 
     private $size = null;
 
+    /** @var DataGrid */
+    protected $grid;
+
+    private $sortable = false;
 
 
-    function __construct($name, $label)
+
+    /**
+     * Column constructor.
+     * @param $name
+     * @param $label
+     * @param DataGrid $grid
+     */
+    function __construct($name, $label, DataGrid $grid)
     {
         $this->name = $name;
         $this->label = $label;
+        $this->grid = $grid;
     }
 
 
@@ -94,5 +107,19 @@ abstract class Column
     {
         $this->size = $size;
         return $this;
+    }
+
+
+
+    public function setSortable($enable = true)
+    {
+        $this->sortable = $enable;
+    }
+
+
+
+    public function isSortable()
+    {
+        return $this->sortable;
     }
 }

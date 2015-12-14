@@ -12,6 +12,8 @@ use Nette\Utils\Callback;
 
 class DataGrid extends Control
 {
+    const SORT_ASC = true;
+    const SORT_DESC = false;
 
     /** @var  @persistent */
     public $filter = array();
@@ -21,6 +23,12 @@ class DataGrid extends Control
 
     /** @var  @persistent */
     public $orderByColumn;
+
+    /** @var  @persistent */
+    public $orderByDirection;
+
+    /** @var  @persistent */
+    public $orderBy = [];
 
     /** @var  array */
     protected $filterDefaults;
@@ -68,21 +76,32 @@ class DataGrid extends Control
 
 
     /**
-     * @return mixed
+     * @param array $orderBy
      */
-    public function getOrderByColumn()
+    public function setOrderBy(array $orderBy)
     {
-        return $this->orderByColumn;
+        $this->orderBy = $orderBy;
     }
 
 
 
     /**
-     * @param mixed $orderByColumn
+     * @param $column
+     * @param $direction
      */
-    public function setOrderByColumn($orderByColumn)
+    public function addOrderBy($column, $direction)
     {
-        $this->orderByColumn = $orderByColumn;
+        $this->orderBy[$column] = $direction;
+    }
+
+
+
+    /**
+     * @param $column
+     */
+    public function removeOrderBy($column)
+    {
+        unset($this->orderBy[$column]);
     }
 
 
@@ -168,7 +187,7 @@ class DataGrid extends Control
      */
     public function addTextColumn($name, $label)
     {
-        $this->columns[$name] = new Columns\TextColumn($name, $label);
+        $this->columns[$name] = new Columns\TextColumn($name, $label, $this);
         return $this->columns[$name];
     }
 
@@ -181,7 +200,7 @@ class DataGrid extends Control
      */
     public function addNumericColumn($name, $label)
     {
-        $this->columns[$name] = new Columns\NumericColumn($name, $label);
+        $this->columns[$name] = new Columns\NumericColumn($name, $label, $this);
         return $this->columns[$name];
     }
 
@@ -194,7 +213,7 @@ class DataGrid extends Control
      */
     public function addDateTimeColumn($name, $label)
     {
-        $this->columns[$name] = new Columns\DateTimeColumn($name, $label);
+        $this->columns[$name] = new Columns\DateTimeColumn($name, $label, $this);
         return $this->columns[$name];
     }
 
@@ -233,6 +252,7 @@ class DataGrid extends Control
         $template->columns = $this->columns;
         $template->links = $this->links;
         $template->data = $this->getData();
+        $template->_orderBy = $this->orderBy;
 
         if ($this->filterFormFactory) {
             $this['form']['filter']->setDefaults($this->filter);
@@ -340,12 +360,26 @@ class DataGrid extends Control
 
 
 
+    public function handleOrderBy($column, $direction)
+    {
+        $this->addOrderBy($column, $direction);
+    }
+
+
+
+    public function handleRemoveOrderBy($column)
+    {
+        $this->removeOrderBy($column);
+    }
+
+
+
     /************************** DATA ***************************/
 
     protected function getData()
     {
         if ($this->dataCallback) {
-            $this->data = Callback::invokeArgs($this->dataCallback, [$this->filter, $this->orderByColumn, $this->lastKey]);
+            $this->data = Callback::invokeArgs($this->dataCallback, [$this->filter, $this->orderBy, $this->lastKey]);
         }
         return is_array($this->data) ? $this->data : [];
     }
