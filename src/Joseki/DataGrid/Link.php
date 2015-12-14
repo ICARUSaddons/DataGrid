@@ -68,7 +68,7 @@ class Link
         if (!$key) {
             $key = $this->grid->getPrimaryKey();
         }
-        $this->args[$key] = ['normal', $value];
+        $this->args[$key] = $value;
     }
 
 
