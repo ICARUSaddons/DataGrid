@@ -13,14 +13,19 @@ class NumericColumnTest extends \Tester\TestCase
 
     public function testFormat()
     {
-        $data = ArrayHash::from([
-            'foo' => 500.36,
-            'zero' => 0,
-            'bar' => ArrayHash::from([
-                'hello' => 100.1,
-                'world' => 121.21,
-            ]),
-        ]);
+        $data = ArrayHash::from(
+            [
+                'foo' => 500.36,
+                'zero' => 0,
+                'bar' => ArrayHash::from(
+                    [
+                        'hello' => 100.1,
+                        'world' => 121.21,
+                        'text' => 'error',
+                    ]
+                ),
+            ]
+        );
 
         $column = new NumericColumn('foo', 'FOO');
         Assert::equal('500.36', $column->formatValue($data));
@@ -31,6 +36,15 @@ class NumericColumnTest extends \Tester\TestCase
         Assert::equal('100.10', $column->formatValue($data));
         $column = new NumericColumn('bar.world', 'WORLD');
         Assert::equal('121.21', $column->formatValue($data));
+
+        Assert::exception(
+            function () use ($data) {
+                $column = new NumericColumn('bar.text', 'Text');
+                $column->formatValue($data);
+            },
+            'Joseki\DataGrid\InvalidTypeException'
+        );
+
     }
 
 }

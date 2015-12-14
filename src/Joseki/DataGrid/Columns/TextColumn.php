@@ -7,32 +7,12 @@ use Nette\Utils\Callback;
 class TextColumn extends Column
 {
 
-    private $callback;
-
-
-
-    /**
-     * @param mixed $callback
-     */
-    public function setCallback($callback)
-    {
-        Callback::check($callback);
-        $this->callback = $callback;
-    }
-
-
-
     public function formatValue($row)
     {
         if ($this->callback) {
-            return Callback::invokeArgs($this->callback, [$row]);
+            return Callback::invokeArgs($this->callback, [$row, $this]);
         }
 
-        $parts = explode('.', $this->getName());
-        do {
-            $name = array_shift($parts);
-            $value = $row = $row->$name;
-        } while (count($parts));
-        return $value;
+        return $this->getChainedValue($row);
     }
 }

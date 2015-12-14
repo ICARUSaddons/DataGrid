@@ -3,6 +3,7 @@
 namespace Joseki\DataGrid\Columns;
 
 use DateTime;
+use Joseki\DataGrid\InvalidTypeException;
 
 class DateTimeColumn extends Column
 {
@@ -15,17 +16,13 @@ class DateTimeColumn extends Column
 
     public function formatValue($row)
     {
-        $parts = explode('.', $this->getName());
-        do {
-            $name = array_shift($parts);
-            $value = $row = $row->$name;
-        } while (count($parts));
+        $value = $this->getChainedValue($row);
 
-        /** @var DateTime $value */
-        if ($value) {
-            return $value->format($this->dateFormat);
+        if (!$value instanceof DateTime) {
+            $type = is_object($value) ? get_class($value) : gettype($value);
+            throw new InvalidTypeException("Expected object of class 'DateTime', but  '$type' given from '{$this->getName()}'");
         }
-        return null;
+        return $value->format($this->dateFormat);
     }
 
 

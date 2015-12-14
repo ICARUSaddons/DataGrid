@@ -2,6 +2,9 @@
 
 namespace Joseki\DataGrid\Columns;
 
+use Joseki\DataGrid\InvalidTypeException;
+use Nette\Utils\Callback;
+
 class NumericColumn extends Column
 {
 
@@ -84,16 +87,17 @@ class NumericColumn extends Column
 
     public function formatValue($row)
     {
-        $parts = explode('.', $this->getName());
-        do {
-            $name = array_shift($parts);
-            $value = $row = $row->$name;
-        } while (count($parts));
-
-        if (is_numeric($value)) {
-            return number_format($value, $this->precision, $this->decimalSeparator, $this->thousandSeparator);
+        if ($this->callback) {
+            return Callback::invokeArgs($this->callback, [$row, $this]);
         }
-        return null;
+
+        $value = $this->getChainedValue($row);
+
+        if (!is_numeric($value)) {
+            $type = is_object($value) ? get_class($value) : gettype($value);
+            throw new InvalidTypeException("Expected numeric value, but  '$type' given from '{$this->getName()}'");
+        }
+        return number_format($value, $this->precision, $this->decimalSeparator, $this->thousandSeparator);
     }
 
 }
