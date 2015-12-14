@@ -33,12 +33,12 @@ class ColumnTest extends \Tester\TestCase
         $column = new TextColumn('bar.hello', 'HELLO', $datagrid);
         Assert::equal('bbb', $column->formatValue($data));
 
-        Assert::exception(
+        Assert::error(
             function () use($data, $datagrid) {
                 $column = new TextColumn('bar.world', 'WORLD', $datagrid);
                 $column->getChainedValue($data);
             },
-            'Joseki\DataGrid\InvalidPropertyException'
+            E_NOTICE
         );
 
     }
