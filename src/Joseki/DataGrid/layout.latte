@@ -10,9 +10,9 @@
                             <th {if $column->getSize()}style="width: {$column->getSize()}%" {/if}>
                                 {$column->getLabel()}
                                 {if $column->isSortable()}
-                                    {$orderBy = isset($_orderBy[$column->getName()]) ? !$_orderBy[$column->getName()] : true}
-                                    <a href="{link orderBy!, $column->getName(), $orderBy}">{if $orderBy}▲{else}▼{/if}</a>
-                                    <a href="{link removeOrderBy!, $column->getName()}">X</a>
+                                    {var $orderBy = isset($_orderBy[$column->getName()]) ? !(bool)$_orderBy[$column->getName()] : true}
+                                    <a href="{link orderBy!, $column->getName(), $orderBy}">{if $orderBy}▼{else}▲{/if}</a>
+                                    <a href="{link removeOrderBy!, $column->getName()}" n:if="isset($_orderBy[$column->getName()])">X</a>
                                 {/if}
                             </th>
                         {/foreach}

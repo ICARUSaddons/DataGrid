@@ -360,9 +360,10 @@ class DataGrid extends Control
 
 
 
-    public function handleOrderBy($column, $direction)
+    public function handleOrderBy($column, $direction = true)
     {
         $this->addOrderBy($column, $direction);
+        $this->redirect('this');
     }
 
 
@@ -370,6 +371,7 @@ class DataGrid extends Control
     public function handleRemoveOrderBy($column)
     {
         $this->removeOrderBy($column);
+        $this->redirect('this');
     }
 
 
