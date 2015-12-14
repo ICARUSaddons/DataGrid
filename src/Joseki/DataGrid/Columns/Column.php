@@ -75,9 +75,6 @@ abstract class Column
         $parts = explode('.', $this->getName());
         do {
             $name = array_shift($parts);
-            if (!property_exists($row, $name)) {
-                throw new InvalidPropertyException("Property '$name' of '{$this->getName()}' does not exist");
-            }
             $value = $row = $row->$name;
         } while (count($parts));
         return $value;
