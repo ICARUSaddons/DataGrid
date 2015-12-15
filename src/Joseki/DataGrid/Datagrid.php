@@ -257,6 +257,10 @@ class DataGrid extends Control
         if ($this->filterFormFactory) {
             $this['form']['filter']->setDefaults($this->filter);
         }
+        if ($this->translator) {
+            $template->translator = $this->translator;
+            $template->setTranslator($this->translator);
+        }
 
         return $template;
     }

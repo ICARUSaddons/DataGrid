@@ -8,7 +8,11 @@
                     <tr>
                         {foreach $columns as $column}
                             <th {if $column->getSize()}style="width: {$column->getSize()}%" {/if}>
+                                {ifSet $translator}
+                                {_ $column->getLabel()}
+                                {else}
                                 {$column->getLabel()}
+                                {/ifSet}
                                 {if $column->isSortable()}
                                     {var $orderBy = isset($_orderBy[$column->getName()]) ? !(bool)$_orderBy[$column->getName()] : true}
                                     <a href="{link orderBy!, $column->getName(), $orderBy}">{if $orderBy}▼{else}▲{/if}</a>
