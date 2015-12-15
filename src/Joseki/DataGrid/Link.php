@@ -20,12 +20,10 @@ class Link
     private $args = [];
 
     /** @var bool */
-    private $usePrimary = false;
+    private $usePrimary = true;
 
     /** @var DataGrid */
     private $grid;
-
-    private $customArgs = [];
 
     private $primaryArg;
 
@@ -70,7 +68,7 @@ class Link
         if (!$key) {
             $key = $this->grid->getPrimaryKey();
         }
-        $this->customArgs[$key] = ['normal', $value];
+        $this->args[$key] = $value;
     }
 
 
@@ -113,7 +111,7 @@ class Link
      */
     public function setArgs($args, $usePrimary = false)
     {
-        $this->customArgs = [];
+        $this->args = [];
         $this->usePrimary = false;
         foreach ($args as $key => $value) {
             $this->addArg($value, $key);
