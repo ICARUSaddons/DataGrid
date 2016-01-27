@@ -18,7 +18,9 @@ class DateTimeColumn extends Column
     {
         $value = $this->getChainedValue($row);
 
-        if (!$value instanceof DateTime) {
+        if ($value === null) {
+            return null;
+        } elseif (!$value instanceof DateTime) {
             $type = is_object($value) ? get_class($value) : gettype($value);
             throw new InvalidTypeException("Expected object of class 'DateTime', but  '$type' given from '{$this->getName()}'");
         }
